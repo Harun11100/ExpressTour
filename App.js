@@ -7,6 +7,7 @@ app.use(express.json())
 
 const tours=JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
+
 app.get('/api/v1/tours',(req,res)=>{
 
       res.status(200).json({
@@ -18,6 +19,15 @@ app.get('/api/v1/tours',(req,res)=>{
   
       })
 })
+
+
+
+
+app.get('/',(req,res)=>{
+      res.status(200).json({message:'Hi there i am from server',app:'expresstour'})
+})
+
+
 
 app.post('/api/v1/tours',(req,res)=>{
 
@@ -44,7 +54,7 @@ app.post('/api/v1/tours',(req,res)=>{
      }))
 })
 
-const port =5000
+const port =8000
 app.listen(port,()=>{
       console.log(`App running on this port :${port}`)
 })
