@@ -81,6 +81,44 @@ app.post('/api/v1/tours',(req,res)=>{
 })
 
 
+// This is the process to update an specific value of an object .
+app.patch('/api/v1/tours/:id',(req,res)=>{
+      
+      if(!req.params.id*1 > tours.length){
+            return res.status(404).json({
+                  status:'fail',
+                  message:'Invalid Id'
+            })
+      }
+      res.status(200).json({
+            status:'success',
+            data:{
+                  tour:'***Updated Tour***'
+            }
+      })
+}) 
+
+
+// this is to delete an object from the server
+
+app.delete('/api/v1/tours/:id',(req,res)=>{
+        const id=req.params.id*1
+       if(id>tours.length){
+
+            const filteredItem=tours.filter((item)=>item.id===id)
+       
+           return res.status(204).json({
+            status:"Deleted",
+            data:{
+               tour:filteredItem
+            }
+           })
+      }
+      
+})
+
+
+
 // this is to run the server at port 8000 on localhost 127.0.0.1
 const port =8000 
 app.listen(port,()=>{
