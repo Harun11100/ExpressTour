@@ -1,7 +1,13 @@
 const express=require('express')
 const fs=require('fs');
+const morg = require('morgan')
 const { dirname } = require('path');
 const app= express();
+
+
+app.use(morg('dev'))
+
+
 app.use(express.json())// this is a middleware to send body data to request object
 
 
