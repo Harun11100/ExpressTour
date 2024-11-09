@@ -5,6 +5,19 @@ const app= express();
 app.use(express.json())// this is a middleware to send body data to request object
 
 
+
+app.use((req,res,next)=>{ // third argument is the convention to be a middle ware which should be next and call inside the block
+console.log('hello i am from middle ware')
+next();
+});
+
+
+app.use((req,res,next)=>{
+      req.requestedTime= new Date().toISOString();
+      next()
+})
+
+
 // read the file fro the directory and stored in "tours" as a json format
 const tours=JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`))
 
@@ -14,11 +27,13 @@ const tours=JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.
 
 
 
-export const getAllTours= () => {
-      (req,res)=>{
+const getAllTours= (req,res) => {
+   
+            console.log(req.requestedTime)
 
             res.status(200).json({
                   status:'success',
+                  requestTime:req.requestedTime,
                   result: tours.length,
                   data:{
                         tours
@@ -27,10 +42,10 @@ export const getAllTours= () => {
             })
       }
       
-}
+
 // this is the process to define params to the https method and how to get specific data from the server through request 
-export const getTour=()=>{
-      (req,res)=>{
+const getTour=(req,res)=>{
+  
             console.log(req.params)
       
             const id=req.params.id*1
@@ -57,15 +72,15 @@ export const getTour=()=>{
       
             
       }
-}
+
 
  
  
 // This is the way to create new data to the server 
 
 
-export const createTour=()=>{
-      (req,res)=>{
+const createTour=(req,res)=>{
+    
 
             const newId=tours[tours.length-1].id+1
             const newTour= Object.assign({
@@ -89,12 +104,12 @@ export const createTour=()=>{
        }
        
        
-}
+
 
 // This is the process to update an specific value of an object .
 
-export const updateTour=()=>{
-     (req,res)=>{
+ const updateTour=(req,res)=>{
+     
       
             if(!req.params.id*1 > tours.length){
                   return res.status(404).json({
@@ -110,13 +125,13 @@ export const updateTour=()=>{
             })
       } 
       
-}
+
 
 
 // this is to delete an object from the server
 
-export const deleteTour=()=>{
-      (req,res)=>{
+const deleteTour=(req,res)=>{
+     
       const id=req.params.id*1
        if(id>tours.length){
 
@@ -130,15 +145,16 @@ export const deleteTour=()=>{
            })
       }
       }
-}
-// app.get('/api/v1/tours',getAllTours())
-// app.get('/api/v1/tours/:id',getTour())
-// app.post('/api/v1/tours',createTour())
-// app.patch('/api/v1/tours/:id',updateTour())
-// app.delete('/api/v1/tours/:id',deleteTour())
+
+
+// app.get('/api/v1/tours',getAllTours)
+// app.get('/api/v1/tours/:id',getTour)
+// app.post('/api/v1/tours',createTour)
+// app.patch('/api/v1/tours/:id',updateTour)
+// app.delete('/api/v1/tours/:id',deleteTour)
 
 app
-.route('/api/v1/tours')
+.route('/api/v1/tours')  
 .get(getAllTours)
 .post(createTour)
 
