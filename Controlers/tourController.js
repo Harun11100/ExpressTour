@@ -9,7 +9,7 @@ const fs = require('fs');
 
  exports.checkId=(req,res,next,val)=>{
   
-  if (req.params.id*1>tours.length){
+  if (req.params.val*1>tours.length){
     
      return res.status(404).json({
       status: 'fail',
@@ -19,6 +19,25 @@ const fs = require('fs');
   next()
 
  }
+  exports.checkBody=(req,res,next)=>{
+    const data=req.body
+ if(!req.body.name || !req.body.price){
+   return res.status(400).json({
+     status:'fail',
+     message: 'Name or price is missing',
+   })
+ }else{
+  
+  return res.status(200).json({
+    data:{
+      data
+    }
+  })
+ }
+
+ next()
+
+} 
 
  
  
