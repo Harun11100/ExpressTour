@@ -1,37 +1,13 @@
 
-
 const fs = require('fs');
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
-
-exports.checkID = (req, res, next, val) => {
-  console.log(`Tour id is: ${val}`);
-
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID'
-    });
-  }
-  next();
-};
+// Dynamically load tours data from JSON
+ const tours =JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`), 'utf-8')
 
 
-
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing name or price'
-    });
-  }
-  next();
-};
 
 exports.getAllTours = (req, res) => {
-  console.log(req.requestTime);
+
 
   res.status(200).json({
     status: 'success',
@@ -44,10 +20,18 @@ exports.getAllTours = (req, res) => {
 };
 
 exports.getTour = (req, res) => {
-  console.log(req.params);
+  
+
   const id = req.params.id * 1;
 
   const tour = tours.find(el => el.id === id);
+
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
 
   res.status(200).json({
     status: 'success',
@@ -56,19 +40,25 @@ exports.getTour = (req, res) => {
     }
   });
 };
-
 exports.createTour = (req, res) => {
-  console.log(req.body);
+ 
 
-  const newId = tours[tours.length - 1].id + 1;
+
+  const newId = tours.length > 0 ? tours[tours.length - 1].id + 1 : 1;
   const newTour = Object.assign({ id: newId }, req.body);
 
   tours.push(newTour);
 
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    path.join(__dirname, '../dev-data/data/tours-simple.json'),
     JSON.stringify(tours),
     err => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to save the new tour'
+        });
+      }
       res.status(201).json({
         status: 'success',
         data: {
@@ -78,19 +68,69 @@ exports.createTour = (req, res) => {
     }
   );
 };
-
 exports.updateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here...>'
+ 
+  const id = req.params.id * 1;
+  const tourIndex = tours.findIndex(el => el.id === id);
+
+  if (tourIndex === -1) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  const updatedTour = { ...tours[tourIndex], ...req.body };
+  tours[tourIndex] = updatedTour;
+
+  fs.writeFile(
+    path.join(__dirname, '../dev-data/data/tours-simple.json'),
+    JSON.stringify(tours),
+    err => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to update the tour'
+        });
+      }
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour: updatedTour
+        }
+      });
     }
-  });
+  );
 };
 
 exports.deleteTour = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null
-  });
+  
+  const id = req.params.id * 1;
+  const tourIndex = tours.findIndex(el => el.id === id);
+
+  if (tourIndex === -1) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  tours.splice(tourIndex, 1);
+
+  fs.writeFile(
+    path.join(__dirname, '../dev-data/data/tours-simple.json'),
+    JSON.stringify(tours),
+    err => {
+      if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Failed to delete the tour'
+        });
+      }
+      res.status(204).json({
+        status: 'success',
+        data: null
+      });
+    }
+  );
 };
