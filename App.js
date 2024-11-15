@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const app = express();
 
 const tourRouter=require('./routes/tourRoutes')
-// const userRouter=require('./routes/userRoutes')
+const userRouter=require('./routes/userRoutes')
 
 
 //middleware
@@ -31,6 +31,6 @@ app.use((req, res, next) => {
 
 
 app.use('/app/v1/tours', tourRouter);
-// app.use('/app/v1/users', userRouter);
+app.use('/app/v1/users', userRouter);
 
 module.exports=app;

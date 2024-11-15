@@ -1,7 +1,7 @@
 const dotenv=require('dotenv')
 const app=require('./App')
 
-// console.log(app.get('env'))
+
 
 dotenv.config({path:'./config.env'})
 console.log(process.env)
