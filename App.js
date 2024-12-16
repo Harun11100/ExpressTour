@@ -24,11 +24,6 @@ app.use((req, res, next) => {
   req.requestedTime = new Date().toISOString();
   next();
 });
-//param middleware
-
-
-
-
 
 app.use('/app/v1/tours', tourRouter);
 app.use('/app/v1/users', userRouter);
