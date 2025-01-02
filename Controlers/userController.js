@@ -22,15 +22,4 @@ const fs = require('fs');
         message: 'The user cannot be created!'
       });
     };
-    exports.updateUser = (req, res) => {
-      res.status(500).json({
-        status: 'error',
-        message: 'The user cannot be updated!'
-      });
-    };
-    exports.deleteUser = (req, res) => {
-      res.status(500).json({
-        status: 'error',
-        message: 'The user cannot be deleted!'
-      });
-    };
+ 
